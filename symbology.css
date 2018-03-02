@@ -1,0 +1,93 @@
+
+/*Configuring the labels of the symbology*/
+.luciad .lcdSymbologyLabel {
+  font-family: Arial, monospace;
+  font-weight: normal;
+  color: white;
+  font-size: 10px;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 1)
+}
+
+/*Styling and positioning the propertiesPanel */
+#propertiesPanel {
+  z-index: 100;
+  position: absolute;
+  top: 240px;
+  left: 10px;
+  padding: 5px;
+  width: 350px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid #c1d92a;
+}
+
+.propertiesPanelColumn {
+  padding: 2px;
+  margin: 2px;
+  width: 100%;
+  vertical-align: middle;
+}
+
+.propertiesPanelLabel {
+  color: black;
+}
+
+.propertiesPanelInput {
+  position: absolute;
+  right: 5px;
+  width: 60%;
+}
+
+/*Positioning the new symbology creation panel*/
+#creationPanel {
+  width: 450px;
+  padding: 5px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid #c1d92a;
+}
+
+.creationPanelLabel {
+  color: black;
+}
+
+.creationPanelInput {
+  width: 77%;
+}
+
+/* Positioning the symbology selection panel */
+
+input[name=layer] {
+  margin: 5px;
+}
+
+/* attribution for bing maps */
+#attribution {
+    position: absolute;
+    left: 40px;
+  bottom: 50px;
+    z-index: 1;
+}
+
+.attribution-string {
+    color: white;
+    font-size: 80%;
+    font-family: sans-serif;
+    text-shadow: 0 0 2px #333,0 0 2px #333,0 0 1px #333;
+    margin-left: 5px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.attribution-logo {
+}
+
+.selectDispositivo
+{
+	width: 100%;
+  color: white;
+	background-color: #171C22;
+	top: 10px;
+  right: 10px;
+  left:  10px;
+	bottom: 10px;
+}
+

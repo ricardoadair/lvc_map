@@ -1,0 +1,207 @@
+<div>
+
+  <!-- Definition of empty memory stores per input field -->
+  <!--<div data-dojo-type="dojo/store/Memory"
+       data-dojo-id="symbolStore"
+       data-dojo-props="data: []">
+  </div>-->
+	<!--<div data-dojo-type="dojo/store/Memory"
+       data-dojo-id="sector1Store"
+       data-dojo-props="data: []">
+  </div>
+  <div data-dojo-type="dojo/store/Memory"
+       data-dojo-id="sector2Store"
+       data-dojo-props="data: []">
+  </div>
+  <div data-dojo-type="dojo/store/Memory"
+       data-dojo-id="affiliationStore"
+       data-dojo-props="data: []">
+  </div>
+  <div data-dojo-type="dojo/store/Memory"
+       data-dojo-id="standardIdentity1Store"
+       data-dojo-props="data: []">
+  </div>
+  <div data-dojo-type="dojo/store/Memory"
+       data-dojo-id="standardIdentity2Store"
+       data-dojo-props="data: []">
+  </div>
+  <div data-dojo-type="dojo/store/Memory"
+       data-dojo-id="statusStore"
+       data-dojo-props="data: []">
+  </div>
+  <div data-dojo-type="dojo/store/Memory"
+       data-dojo-id="countryStore"
+       data-dojo-props="data: []">
+  </div>
+  <div data-dojo-type="dojo/store/Memory"
+       data-dojo-id="orderOfBattleStore"
+       data-dojo-props="data: []">
+  </div>
+  <div data-dojo-type="dojo/store/Memory"
+       data-dojo-id="hqTaskForceDummyStore"
+       data-dojo-props="data: []">
+  </div>
+  <div data-dojo-type="dojo/store/Memory"
+       data-dojo-id="echelonStore"
+       data-dojo-props="data: []">
+  </div>
+  <div data-dojo-type="dojo/store/Memory"
+       data-dojo-id="mobilityStore"
+       data-dojo-props="data: []">
+  </div>-->
+
+  <!-- Visualization of input fields-->
+  <!--<div class="propertiesPanelColumn" data-dojo-attach-point="symbolContainer">
+    <label class="propertiesPanelLabel" for="symbolForm">Symbol:</label>
+    <input class="propertiesPanelInput"
+           id="symbolForm"
+           data-dojo-props="store:symbolStore, searchAttr:'name', queryExpr: '*\$\{0\}*', autoComplete: false, selectOnClick:true, forceWidth: true, pageSize: 10"
+           data-dojo-type="dijit/form/FilteringSelect"
+           data-dojo-attach-point="symbol"
+           data-dojo-attach-event="onChange:_symbolSelect"/>
+  </div>-->
+
+  <div class="propertiesPanelColumn" data-dojo-attach-point="nombreContainer">
+    <label class="propertiesPanelLabel">Identificador:</label>
+    <input class="propertiesPanelInput"
+           data-dojo-props="selectOnClick:false, forceWidth: true, pageSize: 10"
+           data-dojo-type="dijit/form/TextBox"
+           data-dojo-attach-point="nombre" 
+					 readonly />
+  </div>
+
+	<div class="propertiesPanelColumn" data-dojo-attach-point="dispositivo_idContainer">
+    <label class="propertiesPanelLabel">Dispositivo:</label>
+    <input class="propertiesPanelInput"
+           data-dojo-props="selectOnClick:false, forceWidth: true, pageSize: 10"
+           data-dojo-type="dijit/form/TextBox"
+           data-dojo-attach-point="dispositivo_id" 
+					 readonly/>
+  </div>
+	
+	<div class="propertiesPanelColumn" data-dojo-attach-point="latitudeContainer">
+    <label class="propertiesPanelLabel">Latitud:</label>
+    <input class="propertiesPanelInput"
+           data-dojo-props="selectOnClick:false, forceWidth: true, pageSize: 10"
+           data-dojo-type="dijit/form/TextBox"
+           data-dojo-attach-point="latitude" 
+					 readonly/>
+  </div>
+
+	<div class="propertiesPanelColumn" data-dojo-attach-point="longitudeContainer">
+    <label class="propertiesPanelLabel">Longitud:</label>
+    <input class="propertiesPanelInput"
+           data-dojo-props="selectOnClick:false, forceWidth: true, pageSize: 10"
+           data-dojo-type="dijit/form/TextBox"
+           data-dojo-attach-point="longitude" 
+					 readonly/>
+  </div>
+
+  <!--<div class="propertiesPanelColumn" data-dojo-attach-point="sector1Container">
+    <label class="propertiesPanelLabel">Sector 1:</label>
+    <input class="propertiesPanelInput"
+           data-dojo-props="store:sector1Store, searchAttr:'id', selectOnClick:true, forceWidth: true, pageSize: 10"
+           data-dojo-type="dijit/form/FilteringSelect"
+           data-dojo-attach-point="sector1"/>
+  </div>
+
+  <div class="propertiesPanelColumn" data-dojo-attach-point="sector2Container">
+    <label class="propertiesPanelLabel">Sector 2:</label>
+    <input class="propertiesPanelInput"
+           data-dojo-props="store:sector2Store, searchAttr:'id', selectOnClick:true, forceWidth: true, pageSize: 10"
+           data-dojo-type="dijit/form/FilteringSelect"
+           data-dojo-attach-point="sector2"/>
+
+  </div>
+
+  <div class="propertiesPanelColumn" data-dojo-attach-point="affiliationContainer">
+    <label class="propertiesPanelLabel">Affiliation:</label>
+    <input class="propertiesPanelInput"
+           data-dojo-props="store:affiliationStore, searchAttr:'id', selectOnClick:true, forceWidth: true, pageSize: 10"
+           data-dojo-type="dijit/form/FilteringSelect"
+           data-dojo-attach-point="affiliation"/>
+  </div>
+
+  <div class="propertiesPanelColumn" data-dojo-attach-point="standardIdentity1Container">
+    <label class="propertiesPanelLabel">Std Identity 1:</label>
+    <input class="propertiesPanelInput"
+           data-dojo-props="store:standardIdentity1Store, searchAttr:'id', selectOnClick:true, forceWidth: true, pageSize: 10"
+           data-dojo-type="dijit/form/FilteringSelect"
+           data-dojo-attach-point="standardIdentity1"/>
+  </div>
+
+  <div class="propertiesPanelColumn" data-dojo-attach-point="standardIdentity2Container">
+    <label class="propertiesPanelLabel">Std Identity 2:</label>
+    <input class="propertiesPanelInput"
+           data-dojo-props="store:standardIdentity2Store, searchAttr:'id', selectOnClick:true, forceWidth: true, pageSize: 10"
+           data-dojo-type="dijit/form/FilteringSelect"
+           data-dojo-attach-point="standardIdentity2"/>
+  </div>
+
+  <div class="propertiesPanelColumn" data-dojo-attach-point="statusContainer">
+    <label class="propertiesPanelLabel">Status:</label>
+    <input class="propertiesPanelInput"
+           data-dojo-props="store:statusStore, searchAttr:'id', selectOnClick:true, forceWidth: true, pageSize: 10"
+           data-dojo-type="dijit/form/FilteringSelect"
+           data-dojo-attach-point="status"/>
+  </div>
+
+  <div class="propertiesPanelColumn" data-dojo-attach-point="countryContainer">
+    <label class="propertiesPanelLabel">Country:</label>
+    <input class="propertiesPanelInput"
+           data-dojo-props="store:countryStore, searchAttr:'id', selectOnClick:true, forceWidth: true, pageSize: 10"
+           data-dojo-type="dijit/form/FilteringSelect"
+           data-dojo-attach-point="country"/>
+  </div>
+
+  <div class="propertiesPanelColumn" data-dojo-attach-point="orderOfBattleContainer">
+    <label class="propertiesPanelLabel">Order of Battle:</label>
+    <input class="propertiesPanelInput"
+           data-dojo-props="store:orderOfBattleStore, searchAttr:'id', selectOnClick:true, forceWidth: true, pageSize: 10"
+           data-dojo-type="dijit/form/FilteringSelect"
+           data-dojo-attach-point="orderOfBattle"/>
+  </div>
+
+  <div class="propertiesPanelColumn" data-dojo-attach-point="hqTaskForceDummyContainer">
+    <label class="propertiesPanelLabel">HQ/TF/Dummy:</label>
+    <input class="propertiesPanelInput"
+           data-dojo-props="store:hqTaskForceDummyStore, searchAttr:'id', selectOnClick:true, forceWidth: true, pageSize: 10"
+           data-dojo-type="dijit/form/FilteringSelect"
+           data-dojo-attach-point="hqTaskForceDummy"/>
+  </div>
+
+  <div class="propertiesPanelColumn" data-dojo-attach-point="echelonContainer">
+    <label class="propertiesPanelLabel">Echelon:</label>
+    <input class="propertiesPanelInput"
+           data-dojo-props="store:echelonStore, searchAttr:'id', selectOnClick:true, forceWidth: true, pageSize: 10"
+           data-dojo-type="dijit/form/FilteringSelect"
+           data-dojo-attach-point="echelon"/>
+  </div>
+
+  <div class="propertiesPanelColumn" data-dojo-attach-point="mobilityContainer">
+    <label class="propertiesPanelLabel">Mobility:</label>
+    <input class="propertiesPanelInput"
+           data-dojo-props="store:mobilityStore, searchAttr:'id', selectOnClick:true, forceWidth: true, pageSize: 10"
+           data-dojo-type="dijit/form/FilteringSelect"
+           data-dojo-attach-point="mobility"/>
+  </div>
+
+  <div class="propertiesPanelColumn" data-dojo-attach-point="additionalInformationContainer">
+    <label class="propertiesPanelLabel">Additional info:</label>
+    <input type="text"
+           class="propertiesPanelInput"
+           data-dojo-props="selectOnClick:true, forceWidth: true, pageSize: 10"
+           data-dojo-type="dijit/form/TextBox"
+           data-dojo-attach-point="additionalInformation"/>
+  </div>
+
+  <div class="propertiesPanelColumn" data-dojo-attach-point="movementDirectionContainer">
+    <label class="propertiesPanelLabel">Azimuth:</label>
+    <input type="text"
+           class="propertiesPanelInput"
+           data-dojo-props="selectOnClick:true, forceWidth: true, pageSize: 10"
+           data-dojo-type="dijit/form/TextBox"
+           data-dojo-attach-point="movementDirection"/>
+  </div>-->
+
+</div>
