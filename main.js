@@ -162,9 +162,9 @@ require([
 					"</b>"+
 					"<i>" +
 					" (" +
-					Math.round(feature.properties.modifiers.longitude*100)/100 +
-					"," +
 					Math.round(feature.properties.modifiers.latitude*100)/100 +
+					"," +
+					Math.round(feature.properties.modifiers.longitude*100)/100 +
 					")" +
 					"</i>" +
 					"</span>"
@@ -179,9 +179,9 @@ require([
 					"</b>"+
 					"<i>" +
 					" (" +
-					Math.round(feature.properties.modifiers.longitude*100)/100 +
-					"," +
 					Math.round(feature.properties.modifiers.latitude*100)/100 +
+					"," +
+					Math.round(feature.properties.modifiers.longitude*100)/100 +
 					")" +
 					"</i>" +
 					"</span>"
@@ -528,7 +528,7 @@ require([
 						var longitude = point_update["longitude"];
 						
 						var pointCopy = map_layers[dispositivo_id].model.get(id);//.copy();
-						pointCopy.shape.move2D(latitude,longitude);
+						pointCopy.shape.move2D(longitude, latitude);
 						pointCopy.properties.modifiers.latitude = latitude;
 						pointCopy.properties.modifiers.longitude = longitude;
 						map_layers[dispositivo_id].model.put(pointCopy);
@@ -628,8 +628,8 @@ require([
         {
           'type': 'POST',
           'async': false,
-          //'url': "http://localhost:8888/select",
-					'url': "http://adria.inaoep.mx:6475/select",
+          'url': "http://localhost:8888/select",
+					//'url': "http://adria.inaoep.mx:6475/select",
           'dataType': "jsonp",
           'contentType': "application/json",
           //'data': JSON.stringify(
@@ -641,7 +641,7 @@ require([
               //Get the points from the response
 							var data_points = [];
               for(var r=0;r<response.length;r++){
-                var p = ShapeFactory.createPoint(modelRef, [response[r].latitude, response[r].longitude]);
+                var p = ShapeFactory.createPoint(modelRef, [response[r].longitude, response[r].latitude]);
 								var f_feature = new Feature(
 									p,
 									{
