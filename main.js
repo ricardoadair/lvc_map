@@ -628,8 +628,8 @@ require([
         {
           'type': 'POST',
           'async': false,
-          'url': "http://localhost:8888/select",
-					//'url': "http://adria.inaoep.mx:6475/select",
+          //'url': "http://localhost:8888/select",
+					'url': "http://adria.inaoep.mx:6475/select",
           'dataType': "jsonp",
           'contentType': "application/json",
           //'data': JSON.stringify(
