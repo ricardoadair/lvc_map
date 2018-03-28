@@ -91,3 +91,22 @@ input[name=layer] {
 	bottom: 10px;
 }
 
+.radioSelectionLabel
+{
+	text-transform: none;
+	width: 85%;
+	top: 10px;
+  right: 10px;
+  left:  10px;
+	bottom: 10px;
+	font-weight: normal;
+}
+
+.radioSelectionInput
+{
+	width: 15%;
+	top: 10px;
+  right: 10px;
+  left:  10px;
+	bottom: 10px;
+}

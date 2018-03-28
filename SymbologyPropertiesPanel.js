@@ -19,7 +19,7 @@ define([
   // Properties whose possible values can be enumerated.
   var COMBO_BOX_PROPERTY_KEYS = [];
   // Properties whose possible values cannot be enumerated.
-  var TEXT_BOX_PROPERTY_KEYS = ["nombre", "dispositivo_id", "latitude", "longitude"];
+  var TEXT_BOX_PROPERTY_KEYS = ["nombre", "dispositivo_id", "latitude", "longitude", "fecha_registro", "hora_registro", "velocidad", "tiempo"];
 	//var COMBO_BOX_PROPERTY_KEYS = ["sector1", "sector2", "affiliation", "standardIdentity1", "standardIdentity2", "status", "country", "orderOfBattle", "hqTaskForceDummy", "echelon", "mobility"];
   //var TEXT_BOX_PROPERTY_KEYS = ["uniqueDesignation", "additionalInformation", "movementDirection"];
   /**

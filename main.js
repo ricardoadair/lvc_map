@@ -64,7 +64,7 @@ require([
 	var painted_points = [];
 	var propertiesPanel;
 	var jq_select;
-	
+	var mode = 1;
 
 
   function createMilSymModel(ref, featureData) {
@@ -118,7 +118,7 @@ require([
 	{
 		var original_color = color;
 		color = color == '' ? '#' + Math.floor(Math.random()*16777215).toString(16) : color ;
-		 var EVENT_STYLE = {
+		 var STYLE_POINT = {
 			draped: true,
 			width: "16px",
 			height: "16px",
@@ -130,8 +130,8 @@ require([
 				strokeWidth: 1
 			})
 		};
-	
-		var EVENT_SELECTED_STYLE = {
+		
+		var SELECTED_STYLE_POINT = {
 			draped: true,
 			width: "16px",
 			height: "16px",
@@ -143,6 +143,20 @@ require([
 				strokeWidth: 1.5
 			})
 		};
+		
+		var STYLE_POLYLINE = {
+			stroke: {
+				color: color,
+				width: 2
+			}
+		};
+	
+		var SELECTED_STYLE_POLYLINE = {
+			stroke: {
+				color: "rgba(150, 25, 25)",
+				width: 2
+			}
+		};
 	
 		var labelPainter = new BasicFeaturePainter();
 		
@@ -153,55 +167,96 @@ require([
     labelPainter.paintLabel = function(labelcanvas, feature, shape, layer, map, paintState)
 		{
 			var label = "";
-			if (paintState.selected)
-			{
-				label = (
-					"<span style='color: rgba(150, 25, 25)'>" +
-					"<b>"+
-					feature.id +
-					"</b>"+
-					"<i>" +
-					" (" +
-					Math.round(feature.properties.modifiers.latitude*100)/100 +
-					"," +
-					Math.round(feature.properties.modifiers.longitude*100)/100 +
-					")" +
-					"</i>" +
-					"</span>"
-				);
-			}
-			else
-			{
-				label = (
-					"<span style='color: #FFFFFF'>" +
-					"<b>"+
-					feature.id +
-					"</b>"+
-					"<i>" +
-					" (" +
-					Math.round(feature.properties.modifiers.latitude*100)/100 +
-					"," +
-					Math.round(feature.properties.modifiers.longitude*100)/100 +
-					")" +
-					"</i>" +
-					"</span>"
-				);
-			}
-      labelcanvas.drawLabel(
-				label,
-				shape.focusPoint,
+			var type = feature.properties.modifiers.type ? feature.properties.modifiers.type : "";
+			if (type == "point") {
+				if (paintState.selected)
 				{
-					positions: PointLabelPosition.SOUTH
+					label = (
+						"<span style='color: rgba(150, 25, 25)'>" +
+						"<b>"+
+						feature.id +
+						"</b>"+
+						"<i>" +
+						" (" +
+						Math.round(feature.properties.modifiers.latitude*100)/100 +
+						"," +
+						Math.round(feature.properties.modifiers.longitude*100)/100 +
+						")" +
+						"</i>" +
+						"</span>"
+					);
 				}
-			);
+				else
+				{
+					label = (
+						"<span style='color: #FFFFFF'>" +
+						"<b>"+
+						feature.id +
+						"</b>"+
+						"<i>" +
+						" (" +
+						Math.round(feature.properties.modifiers.latitude*100)/100 +
+						"," +
+						Math.round(feature.properties.modifiers.longitude*100)/100 +
+						")" +
+						"</i>" +
+						"</span>"
+					);
+				}
+			}
+			if (type == "polyline") {
+				if (paintState.selected)
+				{
+					label = (
+						"<span style='color: " + color +"'>" +
+						"<b>"+
+						"Dispositivo " + feature.id +
+						"</b>"+
+						"</span>"
+					);
+				}
+				else
+				{
+					label = (
+						"<span style='color: #ffff00'>" +
+						"<b>"+
+						"Dispositivo " + feature.id +
+						"</b>"+
+						"</span>"
+					);
+				}
+			}
+			if (label != "") {
+				labelcanvas.drawLabel(
+					label,
+					shape.focusPoint,
+					{
+						positions: PointLabelPosition.SOUTH
+					}
+				);
+			}
     };
 		
-		labelPainter.paintBody = function(geocanvas, feature, shape, layer, map, paintState) {
-      if (paintState.selected) {
-        geocanvas.drawIcon(shape.focusPoint, EVENT_SELECTED_STYLE);
-      } else {
-        geocanvas.drawIcon(shape.focusPoint, EVENT_STYLE);
-      }
+		labelPainter.paintBody = function(geocanvas, feature, shape, layer, map, paintState)
+		{
+			var type = feature.properties.modifiers.type ? feature.properties.modifiers.type : "";
+			if (type == "point")
+			{
+				if (paintState.selected)
+				{
+					geocanvas.drawIcon(shape.focusPoint, SELECTED_STYLE_POINT);
+				}
+				else
+				{
+					geocanvas.drawIcon(shape.focusPoint, STYLE_POINT);
+				}
+			}
+			if (type == "polyline")
+			{
+				geocanvas.drawShape(shape, paintState.selected ? SELECTED_STYLE_POLYLINE : STYLE_POLYLINE);
+			}
+
+			
     };
 		
 		var featureLayer = new FeatureLayer(featureModel,
@@ -245,11 +300,193 @@ require([
             (featureShape.pointCount < symbologyNode.minimumPointCount && symbologyNode.minimumPointCount !== -1));
   }
 
+	function separarFechaHora(fecha_hora)
+	{
+		var fecha_hora_separada = {};
+		var dia = fecha_hora.getDate();
+		var mes = fecha_hora.getMonth() + 1 ;
+		fecha_hora_separada["fecha"] = ( dia < 10 ? '0' + dia : dia ) + "/" + ( mes < 10 ? '0' + mes : mes )  + "/" + fecha_hora.getFullYear();
+		var horas = fecha_hora.getHours();
+		var minutos = fecha_hora.getMinutes();
+		var segundos = fecha_hora.getSeconds();
+		fecha_hora_separada["hora"] = ( horas < 10 ? '0' + horas : horas )  + ":" + ( minutos < 10 ? '0' + minutos : minutos ) + ":" +  ( segundos < 10 ? '0' + segundos : segundos ) ;
+		return fecha_hora_separada;
+	}
+	
+	function getIndexPaintPoint(id, dispositivo_id)
+	{
+		for(var q = 0; q<painted_points.length;q++)
+		{
+			var data_pp = painted_points[q];
+			var id_pp = data_pp["id"];
+			var dispositivo_id_pp = data_pp["dispositivo_id"] + '';
+			if (id == id_pp && dispositivo_id == dispositivo_id_pp)
+			{
+				return q;
+			}
+		}
+		return -1;
+	}
+	
+	function removeTrajectorys()
+	{
+		for (var key in map_layers)
+		{
+			map_layers[key].model.remove(key);
+		}
+	}
+	
+	function paintTrajectorys(data_points, layers_polyline_update)
+	{
+		var layers_polyline={};
+		for(var p = 0; p<data_points.length;p++)
+		{
+			var data_p = data_points[p];
+			var dispositivo_id = data_p["dispositivo_id"] + '';
+			var name = data_p["name"] + '';
+			var color = data_p["color"];
+			var point = data_p["point"];
+			//Ya existe la capa
+			if (dispositivo_id in layers_polyline)
+			{
+				layers_polyline[dispositivo_id].features_polyline.push(point);
+			}
+			//No existe la capa
+			else
+			{
+				layers_polyline[dispositivo_id] =
+				{
+					'id': dispositivo_id,
+					'name': name,
+					'features_polyline': [point],
+					'color': color,
+				};
+			}
+		}
+	
+		for (var key in layers_polyline)
+		{
+			if (layers_polyline_update == null || (layers_polyline_update && layers_polyline_update.indexOf(layers_polyline[key].id) != -1 ))
+			{
+				var feature_polyline= new Feature(
+					ShapeFactory.createPolyline(
+						modelRef,
+						layers_polyline[key].features_polyline
+					),
+					{
+						"modifiers": {
+								nombre: layers_polyline[key].name,
+								type: "polyline",
+							}
+					},
+					layers_polyline[key].id
+				)
+				map_layers[layers_polyline[key].id].model.put(feature_polyline);
+			}
+		}
+		
+	}
+	
+	function getPointsByAjax(funct_show_points)
+	{
+		$.ajax(
+			{
+				'type': 'POST',
+				'async': false,
+				//'url': "http://localhost:8888/" + (mode == 1 ? "select" : ( mode == 2 ? "selectLast": "") ),
+				'url': "http://adria.inaoep.mx:6475/" + (mode == 1 ? "select" : ( mode == 2 ? "selectLast": "") ),
+				//'url': "http://localhost:8888/select",
+				//'url': "http://adria.inaoep.mx:6475/select",
+				'dataType': "jsonp",
+				'contentType': "application/json",
+				//'data': JSON.stringify(
+				//    {
+				//        'id': 1
+				//    }
+				//),
+				'success': function (response)
+				{
+					//Get the points from the response
+					var data_points = [];
+					for(var r=0;r<response.length;r++)
+					{
+						var p = ShapeFactory.createPoint(modelRef, [response[r].longitude, response[r].latitude]);
+						
+						var json_opciones = null;
+						var velocidad = '--';
+						var tiempo = '--';
+						if (response[r].opciones)
+						{
+							json_opciones = JSON.parse(response[r].opciones);
+							if(json_opciones.velocidad)
+							{
+								velocidad = json_opciones.velocidad + (json_opciones.unidad_velocidad ? ' ' + json_opciones.unidad_velocidad : '') ;
+							}
+							if(json_opciones.tiempo)
+							{
+								tiempo = json_opciones.tiempo + (json_opciones.unidad_tiempo ? ' ' + json_opciones.unidad_tiempo : '') ;
+							}
+						}
+						var fecha_hora_registro = separarFechaHora( new Date(response[r].fecha_registro ) );
+						
+						var f_feature = new Feature(
+							p,
+							{
+								"code" : "SFSACMMS-------",
+								"symbology": currentSymbology,
+								"modifiers": {
+									nombre: response[r].id,
+									dispositivo_id: response[r].nombre,
+									latitude : response[r].latitude,
+									longitude : response[r].longitude,
+									fecha_registro : fecha_hora_registro["fecha"],
+									hora_registro : fecha_hora_registro["hora"],
+									velocidad : velocidad,
+									tiempo : tiempo,
+									type: "point",
+								}
+							},
+							response[r].id
+						);
+						
+						var json = null;
+						var color = '';
+						if (response[r].dispositivo_opciones)
+						{
+							json = JSON.parse(response[r].dispositivo_opciones);
+							if(json.color)
+							{
+								color = json.color;
+							}
+						}
+						var point = {};
+						point["id"] = response[r].id;
+						point["dispositivo_id"] = response[r].dispositivo_id;
+						point["name"] = response[r].nombre;
+						point["latitude"] = response[r].latitude;
+						point["longitude"] = response[r].longitude;
+						point["color"] = color;
+						point["Feature"] = f_feature;
+						point["point"] = p;
+						data_points.push(point);
+					}
+					funct_show_points(data_points);
+				},
+				'error': function(jqXHR, exception)
+				{
+					console.log('error '+ jqXHR.status);
+				}
+			}
+		);   
+	}
+	
 	function initializeMapWithAjax()
 	{
 		//console.log('initializeMapWithAjax');
-      getPointsByAjax(
-        function(data_points){
+      getPointsByAjax
+			(
+        function(data_points)
+				{
           //Inicialize map
 					new SampleContextMenu(map);
 					//Center map in a point
@@ -265,6 +502,7 @@ require([
 						//var longitude = data_p["longitude"];
 						var color = data_p["color"];
 						var feature = data_p["Feature"];
+						var point = data_p["point"];
 						//Ya existe la capa
 						if (dispositivo_id in layers)
 						{
@@ -288,14 +526,10 @@ require([
 					{
 						var points = [];
 						points = layers[key].features;
-					
 						var featureModel = createMilSymModel(modelRef, points);
 						var newLayer = createMilSymLayer(featureModel, layers[key].name, layers[key].id, layers[key].color);
-						
 						map_layers[layers[key].id] = newLayer;
-
 						map.layerTree.addChild(newLayer);
-						
 					}
 					painted_points = data_points;
 					
@@ -330,10 +564,7 @@ require([
 						);
 					}
 					
-					jq_div_select.append(jq_select);
 					jq_select.val('0');
-					jq_panel_layers.prepend(jq_div_select);
-					
 					jq_select.change(
 						function () {
 							if (jq_select.val() == '0')
@@ -359,6 +590,62 @@ require([
 							}
 						}
 					);
+					
+					jq_div_select.append(jq_select);
+					
+					var jq_radio_trayectoria = $('<input>');
+					jq_radio_trayectoria.prop("id", 'radio_trayectoria');
+					jq_radio_trayectoria.prop("type", 'radio');
+					jq_radio_trayectoria.prop("value", 'trayectoria');
+					jq_radio_trayectoria.prop("name", 'seleccion');
+					jq_radio_trayectoria.addClass("radioSelectionInput");
+					jq_radio_trayectoria.prop("checked","checked");
+					mode = 1;
+					var jq_label_trayectoria = $('<label>');
+					jq_label_trayectoria.prop('for','radio_trayectoria');
+					jq_label_trayectoria.html('Trayectoria');
+					jq_label_trayectoria.addClass("radioSelectionLabel");
+					
+					var jq_radio_ultimo = $('<input>');
+					jq_radio_ultimo.prop("id", 'radio_ultimo');
+					jq_radio_ultimo.prop("type", 'radio');
+					jq_radio_ultimo.prop("value", 'ultimo');
+					jq_radio_ultimo.prop("name", 'seleccion');
+					jq_radio_ultimo.addClass("radioSelectionInput");
+					var jq_label_ultimo = $('<label>');
+					jq_label_ultimo.prop('for','radio_ultimo');
+					jq_label_ultimo.html('Último punto');
+					jq_label_ultimo.addClass("radioSelectionLabel");
+					
+					var jq_div_radios = $('<form>');
+					
+					jq_div_radios.append(jq_radio_trayectoria);
+					jq_div_radios.append(jq_label_trayectoria);
+					jq_div_radios.append($('<br>'));
+					jq_div_radios.append(jq_radio_ultimo);
+					jq_div_radios.append(jq_label_ultimo);
+					
+					jq_panel_layers.prepend(jq_div_radios);
+					jq_panel_layers.prepend(jq_div_select);
+					
+					jq_radio_trayectoria.change(
+						function () {
+							mode = 1;
+							updateMapWithAjax();
+						}
+					);
+					jq_radio_ultimo.change(
+						function () {
+							mode = 2;
+							removeTrajectorys();
+							updateMapWithAjax();
+						}
+					);
+
+					if (mode == 1)
+					{
+						paintTrajectorys(data_points, null);
+					}
 					////////////////////////////////
 					
 					//Panel properties
@@ -424,35 +711,25 @@ require([
 						propertiesPanel.setMilitarySymbol(featureToEdit.properties.symbology, featureToEdit.properties.code, featureToEdit.properties.modifiers);
 					
 						clickHandle && clickHandle.remove();
-
+					
 					});
 					
         }
       );
-
     }
 		
-		function getIndexPaintPoint(id, dispositivo_id)
+		function updateMapWithAjax()
 		{
-			for(var q = 0; q<painted_points.length;q++)
-			{
-				var data_pp = painted_points[q];
-				var id_pp = data_pp["id"];
-				var dispositivo_id_pp = data_pp["dispositivo_id"] + '';
-				if (id == id_pp && dispositivo_id == dispositivo_id_pp)
+      getPointsByAjax
+			(
+        function(data_points)
 				{
-					return q;
-				}
-			}
-			return -1;
-		}
-		
-		function updateMapWithAjax(){
-      getPointsByAjax(
-        function(data_points){
           //Update map
-					//console.log("updateMapWithAjax: ");
 					
+					/////////////////////////////////////////////////////
+					//Get Changes
+					var any_change = false;
+					var layers_polyline_update =[];
 					var update_points = [];
 					var remove_points = [];
 					
@@ -480,14 +757,26 @@ require([
 								if (latitude != latitude_pp || longitude != longitude_pp )
 								{
 									//update
+									//data_pp["old_latitude"] = latitude;
+									//data_pp["old_longitude"] = longitude;
 									update_points.push(data_pp);
+									any_change = true;
+									if (layers_polyline_update.indexOf(dispositivo_id) == -1)
+									{
+										layers_polyline_update.push(dispositivo_id);
+									}
 								}
 							}
 						}
 						if (in_db == false)
 						{
 							//remove
-							remove_points.push(data_p);	
+							remove_points.push(data_p);
+							any_change = true;
+							if (layers_polyline_update.indexOf(dispositivo_id) == -1)
+							{
+								layers_polyline_update.push(dispositivo_id);
+							}
 						}
 					}
 					
@@ -514,13 +803,19 @@ require([
 						{
 							//add
 							add_points.push(data_pp);
+							any_change = true;
+							if (layers_polyline_update.indexOf(dispositivo_id_pp) == -1)
+							{
+								layers_polyline_update.push(dispositivo_id_pp);
+							}
 						}
 					}
+					/////////////////////////////////////////////////////
 					
 					//Update points
 					for(var p = 0; p<update_points.length;p++)
 					{
-						console.log("Actualizando: " + update_points.length );
+						//console.log("Actualizando: " + update_points.length );
 						var point_update = update_points[p];
 						var id = point_update["id"];
 						var dispositivo_id = point_update["dispositivo_id"] + '';
@@ -558,7 +853,7 @@ require([
 					//Add points
 					for(var p = 0; p<add_points.length;p++)
 					{
-						console.log("Agregando: " + add_points.length );
+						//console.log("Agregando: " + add_points.length );
 						
 						var point_add = add_points[p];
 						var id = point_add["id"];
@@ -567,6 +862,7 @@ require([
 						var latitude = point_add["latitude"];
 						var longitude = point_add["longitude"];
 						var feature = point_add["Feature"];
+						var point = point_add["point"];
 						var color = point_add["color"];
 						
 						var index = getIndexPaintPoint(id, dispositivo_id);
@@ -581,7 +877,6 @@ require([
 							else
 							{
 								var points = [feature];
-							
 								var featureModel = createMilSymModel(modelRef, points);
 								var newLayer = createMilSymLayer(featureModel, name, dispositivo_id, color);
 								map_layers[dispositivo_id] = newLayer;
@@ -604,7 +899,7 @@ require([
 					//Remove points
 					for(var p = 0; p<remove_points.length;p++)
 					{
-						console.log("Removiendo: " + remove_points.length );
+						//console.log("Removiendo: " + remove_points.length );
 						var point_remove= remove_points[p];
 						var id = point_remove["id"];
 						var dispositivo_id = point_remove["dispositivo_id"] + '';
@@ -618,75 +913,16 @@ require([
 						}
 					}
 					
+					//Update Trayectory
+					if (mode == 1 && any_change == true) 
+					{
+						paintTrajectorys(data_points, layers_polyline_update);
+					}
+					
         }
       );
     }
-    
-    function getPointsByAjax(funct_show_points)
-		{
-      $.ajax(
-        {
-          'type': 'POST',
-          'async': false,
-          //'url': "http://localhost:8888/select",
-					'url': "http://adria.inaoep.mx:6475/select",
-          'dataType': "jsonp",
-          'contentType': "application/json",
-          //'data': JSON.stringify(
-          //    {
-          //        'id': 1
-          //    }
-          //),
-          'success': function (response) {
-              //Get the points from the response
-							var data_points = [];
-              for(var r=0;r<response.length;r++){
-                var p = ShapeFactory.createPoint(modelRef, [response[r].longitude, response[r].latitude]);
-								var f_feature = new Feature(
-									p,
-									{
-										"code" : "SFSACMMS-------",
-										"symbology": currentSymbology,
-										"modifiers": {
-											nombre: response[r].id,
-											dispositivo_id: response[r].nombre,
-											latitude : response[r].latitude,
-											longitude : response[r].longitude,
-										}
-									},
-									response[r].id
-								);
-								
-								var json = null;
-								var color = '';
-								if (response[r].dispositivo_opciones)
-								{
-									json = JSON.parse(response[r].dispositivo_opciones);
-									if(json.color)
-									{
-										color = json.color;
-									}
-								}
-								var point = {};
-								point["id"] = response[r].id;
-								point["dispositivo_id"] = response[r].dispositivo_id;
-								point["name"] = response[r].nombre;
-								point["latitude"] = response[r].latitude;
-								point["longitude"] = response[r].longitude;
-								point["color"] = color;
-								point["Feature"] = f_feature;
-								data_points.push(point);
-              }
-              funct_show_points(data_points);
-            },
-            'error': function(jqXHR, exception)
-            {
-              console.log('error '+ jqXHR.status);
-            }
-        }
-      );   
-    }
-
+		
   LayerConfigUtil.createBingLayer({type: "Aerial"})
       .then(function(bingLayer) {
         map = sample.makeMap({reference: ReferenceProvider.getReference("EPSG:900913")},
@@ -706,7 +942,7 @@ require([
       });
 	//Update the every * milliseconds
 	var id_terval;
-	var interval = 5000;
+	var interval = 1000;
 	var refresh = function()
 	{
 			updateMapWithAjax();
