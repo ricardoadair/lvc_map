@@ -25,7 +25,9 @@ require([
 	"luciad/view/style/PointLabelPosition",
   "samples/lvc_map/SymbologyUtil",
   "samples/lvc_map/SymbologyPropertiesPanel",
-  "samples/template/sample"
+  "samples/template/sample",
+	"luciad/view/google/GoogleLayer",
+	"dojo/query",
 ], function(
 		connect,
 		dom,
@@ -53,7 +55,9 @@ require([
 		PointLabelPosition,
 		SymbologyUtil,
     SymbologyPropertiesPanel,
-    sample
+    sample,
+		GoogleLayer,
+		query
 	)
 	{
 
@@ -490,7 +494,10 @@ require([
           //Inicialize map
 					new SampleContextMenu(map);
 					//Center map in a point
-          map.mapNavigator.fit(ShapeFactory.createBounds(modelRef, [-105.25, 10.4, 20.30, 0.15]));
+					//19.043645, -98.198083 --> Puebla
+					map.mapNavigator.fit({bounds: ShapeFactory.createBounds(modelRef, [-98.198083, 0.01, 19.043645, 0.01]), animate: true});
+          //map.mapNavigator.fit(ShapeFactory.createBounds(modelRef, [-105.25, 19.043645, 20.30, 0.15]));
+					
 					var layers = {};
           for(var p = 0; p<data_points.length;p++)
 					{
@@ -520,7 +527,23 @@ require([
 							};
 						}
 					}
-					LayerConfigUtil.addLonLatGridLayer(map);
+					//LayerConfigUtil.addLonLatGridLayer(map);
+					var grid = LayerConfigUtil.addLonLatGridLayer(map);
+					
+					var googlelayer = new GoogleLayer({mapType: "hybrid"});
+					map.layerTree.addChild(googlelayer, "below", grid);
+					//#endsnippet googleLayer
+		
+					query("button[data-maptype*=goog_]").forEach(function(node) {
+						var val = domAttr.get(node, "data-maptype");
+						var type = val.replace("goog_", "");
+						on(node, "click", function() {
+							googlelayer.mapType = type;
+						});
+					});
+					
+					delete window.luciad_samples_googlelayer_startup;
+					
 					//Create Layers
 					for (var key in layers)
 					{
@@ -922,32 +945,55 @@ require([
         }
       );
     }
-		
-  LayerConfigUtil.createBingLayer({type: "Aerial"})
-      .then(function(bingLayer) {
-        map = sample.makeMap({reference: ReferenceProvider.getReference("EPSG:900913")},
-            {includeBackground: false});
-        map.layerTree.addChild(bingLayer, "bottom");
-        new AttributionComponent(map, {displayNode: "attribution"});
-        //initializeMap(map);
-				initializeMapWithAjax();
-      }, function(error) {
-        LayerConfigUtil.createBackgroundLayer().then(function(bgLayer) {
-          map = sample.makeMap({reference: bgLayer.model.reference},
-              {includeBackground: false});
-          map.layerTree.addChild(bgLayer, "bottom");
-          //initializeMap(map);
+	
+	function startup() {
+		LayerConfigUtil.createBingLayer({type: "Aerial"})
+				.then(function(bingLayer) {
+					map = sample.makeMap({reference: ReferenceProvider.getReference("EPSG:900913")},
+							{includeBackground: false});
+					//map.layerTree.addChild(bingLayer, "bottom");
+					new AttributionComponent(map, {displayNode: "attribution"});
+					//initializeMap(map);
 					initializeMapWithAjax();
-        });
-      });
-	//Update the every * milliseconds
-	var id_terval;
-	var interval = 1000;
-	var refresh = function()
-	{
-			updateMapWithAjax();
-			//interval += 1000;
-			id_terval = setTimeout(refresh,interval);
+				}, function(error) {
+					LayerConfigUtil.createBackgroundLayer().then(function(bgLayer) {
+						map = sample.makeMap({reference: ReferenceProvider.getReference("EPSG:900913")},
+								{includeBackground: false});
+						//map.layerTree.addChild(bgLayer, "bottom");
+						//initializeMap(map);
+						initializeMapWithAjax();
+					});
+				});
+		//Update the every * milliseconds
+		var id_terval;
+		var interval = 1000;
+		var refresh = function()
+		{
+				updateMapWithAjax();
+				//interval += 1000;
+				id_terval = setTimeout(refresh,interval);
+		}
+		id_terval = setTimeout(refresh,interval);
 	}
-	id_terval = setTimeout(refresh,interval);
+  
+	(function(){
+    var key = "AIzaSyDfjWZinh2cXWga_V1ip9kbSKaXxkgqUF4";
+    var api = "https://maps.googleapis.com/maps/api/js?v=3.28&callback=luciad_samples_googlelayer_startup";
+    if (key){
+      api += "&key=" + key;
+      credentials = true;
+    } else {
+      var message = 'Sample cannot be loaded without credentials.<br>You have to pass in your Google Application Key by appending a "key"-parameter to the URL.  e.g. ?key=MYKEY. ';
+      console.log(message);
+      templateSample.error("google", message);
+    }
+
+    var scriptTag = document.createElement("script");
+    scriptTag.src = api;
+    scriptTag.type = "text/javascript";
+    document.head.appendChild(scriptTag);
+  }());
+	
+	window.luciad_samples_googlelayer_startup = startup;
+	
 });
